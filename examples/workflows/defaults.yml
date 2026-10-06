@@ -1,0 +1,12 @@
+name: Implicit permissions fixture
+on: push
+jobs:
+  inherited:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo 'hello'
+  explicit:
+    permissions: {}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo 'hello'

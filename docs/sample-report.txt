@@ -1,0 +1,21 @@
+Workflow Guard: 1 file(s), 5 finding(s), 0 error(s)
+examples/workflows/risky.yml:3:14 [HIGH WG001] workflow
+  All available GITHUB_TOKEN permissions are writable.
+  Evidence: permissions: write-all
+  Fix: Declare only the individual permissions required by this scope.
+examples/workflows/risky.yml:8:15 [MEDIUM WG005] job=build
+  Remote dependency reference is mutable or lacks an immutable pin.
+  Evidence: actions/checkout@main
+  Fix: Pin the remote action or reusable workflow to a verified full commit SHA.
+examples/workflows/risky.yml:10:16 [HIGH WG003] job=build
+  Privileged pull_request_target workflow checks out pull-request head input.
+  Evidence: checkout ref: ${{ github.event.pull_request.head.sha }}
+  Fix: Keep untrusted pull-request code in an unprivileged workflow; review any subsequent execution.
+examples/workflows/risky.yml:13:17 [HIGH WG004] job=build
+  Event input is interpolated directly into script source.
+  Evidence: ${{ github.event.pull_request.title }}
+  Fix: Pass untrusted input via env and quote the shell variable; review transformations and shell usage.
+examples/workflows/risky.yml:15:20 [HIGH WG006] job=build
+  An echo command directly references a secret expression; inspect its output destination.
+  Evidence: ${{ secrets.DEMO_TOKEN }}
+  Fix: Avoid printing secret values. Log masking does not guarantee redaction of transformed data.

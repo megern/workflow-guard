@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "tool": "workflow-guard",
+  "files_scanned": 1,
+  "summary": {
+    "findings": 5,
+    "by_severity": {
+      "low": 0,
+      "medium": 1,
+      "high": 4
+    },
+    "errors": 0
+  },
+  "findings": [
+    {
+      "rule_id": "WG001",
+      "severity": "high",
+      "file": "examples/workflows/risky.yml",
+      "line": 3,
+      "column": 14,
+      "job": null,
+      "message": "All available GITHUB_TOKEN permissions are writable.",
+      "evidence": "permissions: write-all",
+      "recommendation": "Declare only the individual permissions required by this scope."
+    },
+    {
+      "rule_id": "WG005",
+      "severity": "medium",
+      "file": "examples/workflows/risky.yml",
+      "line": 8,
+      "column": 15,
+      "job": "build",
+      "message": "Remote dependency reference is mutable or lacks an immutable pin.",
+      "evidence": "actions/checkout@main",
+      "recommendation": "Pin the remote action or reusable workflow to a verified full commit SHA."
+    },
+    {
+      "rule_id": "WG003",
+      "severity": "high",
+      "file": "examples/workflows/risky.yml",
+      "line": 10,
+      "column": 16,
+      "job": "build",
+      "message": "Privileged pull_request_target workflow checks out pull-request head input.",
+      "evidence": "checkout ref: ${{ github.event.pull_request.head.sha }}",
+      "recommendation": "Keep untrusted pull-request code in an unprivileged workflow; review any subsequent execution."
+    },
+    {
+      "rule_id": "WG004",
+      "severity": "high",
+      "file": "examples/workflows/risky.yml",
+      "line": 13,
+      "column": 17,
+      "job": "build",
+      "message": "Event input is interpolated directly into script source.",
+      "evidence": "${{ github.event.pull_request.title }}",
+      "recommendation": "Pass untrusted input via env and quote the shell variable; review transformations and shell usage."
+    },
+    {
+      "rule_id": "WG006",
+      "severity": "high",
+      "file": "examples/workflows/risky.yml",
+      "line": 15,
+      "column": 20,
+      "job": "build",
+      "message": "An echo command directly references a secret expression; inspect its output destination.",
+      "evidence": "${{ secrets.DEMO_TOKEN }}",
+      "recommendation": "Avoid printing secret values. Log masking does not guarantee redaction of transformed data."
+    }
+  ],
+  "errors": []
+}

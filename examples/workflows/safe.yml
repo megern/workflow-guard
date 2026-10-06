@@ -1,0 +1,16 @@
+name: Scoped pull request check
+on: [pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      # This synthetic SHA is a fixture value, not a verified runnable dependency.
+      - uses: actions/checkout@1111111111111111111111111111111111111111
+      - uses: ./local-action
+      - name: Treat title as data
+        env:
+          TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          printf '%s\n' "$TITLE"
