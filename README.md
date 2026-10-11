@@ -84,3 +84,9 @@ fixture is an executable CI template. Keep them outside `.github/workflows`.
 The checks draw on GitHub's [secure use reference](https://docs.github.com/en/actions/reference/security/secure-use)
 and [workflow syntax](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax).
 See the limitations before using findings to block a merge. Licensed under MIT.
+
+## Literal bracket contexts
+
+WG003 and WG004 recognize literal bracket access such as `github['event']['issue']['title']` and mixed bracket/dot properties. Reports retain the original expression and source location. This follows [GitHub's documented context syntax](https://docs.github.com/en/actions/reference/workflows-and-actions/expressions). Dynamic property names, expression evaluation and full data-flow analysis remain outside the scanner's scope. Environment-variable references alone are not treated as direct script interpolation.
+
+Run `PYTHONPATH=src python3 -m unittest discover -s tests` to check both supported forms and the env-only negative case.

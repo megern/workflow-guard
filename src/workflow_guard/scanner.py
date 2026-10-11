@@ -100,6 +100,11 @@ def compact(expression: str) -> str:
     return re.sub(r"\s+", "", expression)
 
 
+def context_access(expression: str) -> str:
+    """Normalize literal bracket property access for heuristic context checks."""
+    return re.sub(r"\['([A-Za-z_][A-Za-z0-9_]*)'\]", r".\1", compact(expression))
+
+
 def structural_error(root: Node, file: str) -> ScanError | None:
     """Reject ambiguous duplicate/merge keys; walk alias graphs without recursion."""
     pending = [root]
@@ -248,7 +253,7 @@ def scan_text(source: str, file: str = "<memory>") -> Report:
                     if name not in {"ref", "repository"} or not isinstance(value, ScalarNode):
                         continue
                     for match in EXPRESSION.finditer(value.value):
-                        if HEAD_CONTEXT.search(compact(match.group(1))):
+                        if HEAD_CONTEXT.search(context_access(match.group(1))):
                             add("WG003", "high", value, job_name,
                                 "Privileged pull_request_target workflow checks out pull-request head input.",
                                 f"checkout {name}: ${{{{ {match.group(1).strip()} }}}}",
@@ -259,7 +264,7 @@ def scan_text(source: str, file: str = "<memory>") -> Report:
                 continue
             for match in EXPRESSION.finditer(run.value):
                 expression = match.group(1)
-                if EVENT_CONTEXT.search(compact(expression)):
+                if EVENT_CONTEXT.search(context_access(expression)):
                     add("WG004", "high", run, job_name,
                         "Event input is interpolated directly into script source.",
                         "${{ " + expression.strip() + " }}",
