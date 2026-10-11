@@ -1,5 +1,20 @@
 # Workflow Guard
 
+## Public preview v0.2.0
+
+Python 3.11+; commands below use a local Mac/Linux shell. Source and reports are public; this is a research/development preview, not a production-security certification.
+
+```sh
+git clone --branch v0.2.0 https://github.com/megern/workflow-guard.git
+cd workflow-guard
+python3 -m venv .venv
+source .venv/bin/activate
+python3 -m pip install .
+workflow-guard --help
+```
+
+The installed entry point was exercised outside the checkout in a separate local environment. This revision has 20 passing local tests. No hosted CI or cloud compute is used. Report an issue with the command, Python/OS versions, sanitized input and expected/actual behavior; remove credentials and private records first. Benchmarks describe the supplied fixtures and hardware.
+
 Inspect GitHub Actions workflow YAML locally and get a security review report with
 file, line, column, rule, evidence, and a suggested change. The scanner uses
 deterministic rules and PyYAML; it does not execute workflows, call an AI service,
@@ -90,3 +105,12 @@ See the limitations before using findings to block a merge. Licensed under MIT.
 WG003 and WG004 recognize literal bracket access such as `github['event']['issue']['title']` and mixed bracket/dot properties. Reports retain the original expression and source location. This follows [GitHub's documented context syntax](https://docs.github.com/en/actions/reference/workflows-and-actions/expressions). Dynamic property names, expression evaluation and full data-flow analysis remain outside the scanner's scope. Environment-variable references alone are not treated as direct script interpolation.
 
 Run `PYTHONPATH=src python3 -m unittest discover -s tests` to check both supported forms and the env-only negative case.
+
+
+### Local SARIF export
+
+```sh
+workflow-guard examples --format sarif --root . --fail-on none > /tmp/workflow-results.sarif
+```
+
+The export uses SARIF 2.1.0, repository-relative escaped paths, source locations and parse-error notifications. Its output was validated locally against the [OASIS SARIF schema](https://github.com/oasis-tcs/sarif-spec/blob/main/sarif-2.1/schema/sarif-schema-2.1.0.json); [GitHub documents its supported subset](https://docs.github.com/en/code-security/reference/code-scanning/sarif-files/sarif-support). No upload, hosted CI job or workflow execution is performed. Shell redirection should use a separate report path, as shown, to preserve inputs.

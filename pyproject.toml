@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "workflow-guard"
-version = "0.1.0"
+version = "0.2.0"
 description = "Local static security checks for GitHub Actions workflows with source locations"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -16,6 +16,10 @@ classifiers = [
     "Topic :: Security",
     "Environment :: Console",
 ]
+
+[project.urls]
+Repository = "https://github.com/megern/workflow-guard"
+Issues = "https://github.com/megern/workflow-guard/issues"
 
 [project.scripts]
 workflow-guard = "workflow_guard.cli:main"

@@ -8,6 +8,7 @@ import sys
 from pathlib import Path
 
 from . import __version__
+from .sarif import to_sarif
 from .scanner import Report, SEVERITY_RANK, scan_paths
 
 
@@ -33,7 +34,8 @@ def text_report(report: Report) -> str:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Inspect GitHub Actions YAML locally without executing it.")
     parser.add_argument("paths", nargs="+", help="Workflow files or directories of workflow YAML")
-    parser.add_argument("--format", choices=("text", "json"), default="text")
+    parser.add_argument("--format", choices=("text", "json", "sarif"), default="text")
+    parser.add_argument("--root", type=Path, default=Path.cwd(), help="Repository root for SARIF relative paths")
     parser.add_argument("--json-output", type=Path, help="Also save a JSON report to this file")
     parser.add_argument("--fail-on", choices=("none", "low", "medium", "high"), default="high",
                         help="Exit 1 on findings at or above this severity (default: high)")
@@ -57,7 +59,7 @@ def main(argv: list[str] | None = None) -> int:
         except OSError:
             print("Cannot write the requested JSON report.", file=sys.stderr)
             return 2
-    print(serialized if args.format == "json" else text_report(report))
+    print(json.dumps(to_sarif(report, args.root), ensure_ascii=False, indent=2) if args.format == "sarif" else serialized if args.format == "json" else text_report(report))
     if report.errors:
         return 2
     if args.fail_on != "none" and any(
