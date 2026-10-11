@@ -1,5 +1,19 @@
 # Workflow Guard
 
+## Adopt a reviewed baseline without hiding risks (local development)
+
+Use `--baseline /absolute/local/reviewed-report.json --root /absolute/repository`
+to apply the severity exit gate only to unmatched findings. **All findings remain
+in text, JSON and SARIF output**; scan errors still exit 2. The baseline must be
+a version 1 Workflow Guard JSON report without scan errors and must refer to
+workflows inside the same root. JSON output cannot overwrite the baseline.
+
+Identity includes repository-relative path, rule, severity, job, message and
+evidence. Line moves alone do not create a new risk. Changed evidence/severity
+and additional identical instances remain unmatched through multiset counting.
+Review the baseline as explicit exceptions; it does not certify existing risks
+as safe. JSON and SARIF record its exact hash and the unmatched finding indices.
+
 ## Public preview v0.2.0
 
 Python 3.11+; commands below use a local Mac/Linux shell. Source and reports are public; this is a research/development preview, not a production-security certification.
