@@ -1,5 +1,11 @@
 # Workflow Guard
 
+## Version 1.0.0
+
+Repository workflow review. Scans repository .github/workflows snapshots, records exact input hashes, retains parse errors and reviewed-baseline findings, and emits an HTML/JSON review bundle. Optional --config accepts fail_on and an in-repository baseline path. Static covered-pattern review; no workflow execution or automatic edits.
+
+See the [complete local workflow](docs/v1-workflow.md) for installation, commands, review artifacts and limits. Earlier preview notes below describe their historical tagged revisions.
+
 ## Adopt a reviewed baseline without hiding risks (local development)
 
 Use `--baseline /absolute/local/reviewed-report.json --root /absolute/repository`
